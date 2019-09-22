@@ -1,0 +1,229 @@
+<div style="float:left;width:40%;margin-left: 4%;">
+									<form id="searchFoodForm" class="form-horizontal"  style="width:90%; margin:1%;">
+										 <div class="input-group" >
+										  <div class="input-control search-box search-box-circle has-icon-left has-icon-right search-example" id="searchboxExample">
+										    <!-- 模糊搜索菜品名内容 -->
+										    <input id="sqlvalue" name="sqlvalue" type="search" class="form-control search-input" placeholder="模糊搜索菜品名" value="">
+										    <input id="sqlkey" name="sqlkey" type="hidden" value="">
+										    <input id="sqlPKName" name="sqlPKName" type="hidden" value="">
+										    <input id="sqlMNName" name="sqlMNName" type="hidden" value="">
+										    <input id="sqldowhat" name="sqldowhat" type="hidden" value="">
+										    <label for="inputSearchExample3" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+										  </div>
+										  <span class="input-group-btn">
+										    <button class="btn btn-primary" onclick="showAllfood('searchFood','','')" type="button">搜索</button>
+										  </span>
+										</div>
+									</form>
+									
+									
+									<div  class="scrollbar-hover" style="width:100%; margin:0.5%; height: 300px; background-size:contain;float:left; overflow: scroll;">
+										<table class="table-7" style="width:96%">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>菜品名</th>
+													<th>菜品种类</th>
+													<th>菜品菜系</th>
+													<th>菜品寓意</th>
+													<th>菜品价格</th>
+													<th>销量</th>
+													<th>操作</th>
+												</tr>
+											</thead>
+											<!-- 这里面的内容会异步刷新出来 -->
+											<tbody id="searchFood">
+												<tr>
+													<td>1</td>
+													<td>喜结同心</td>
+													<td>8</td>
+													<td>升学宴</td>
+													<td>夫妻永结同心</td>
+													<td>999</td>
+													<td>0</td>
+													<td>
+													<button  class="btn btn-primary" type="button">
+														添加
+													</button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									</div>
+									
+									
+									<div style="float:right;width:50%;margin-right: 4%;">
+									<div align="center" style="font-size: 25px;"> 此套餐的菜品 </div>
+									<div  class="scrollbar-hover" style="width:99%; margin:0.5%; height: 300px; background-size:contain;float:right; overflow: scroll;">
+										
+										<table class="table-7" style="width:96%">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>菜品名</th>
+													<th>菜品种类</th>
+													<th>菜品菜系</th>
+													<th>菜品寓意</th>
+													<th>菜品价格</th>
+													<th>销量</th>
+													<th>操作</th>
+												</tr>
+											</thead>
+											<!-- 会异步刷新的套餐菜品表 -->
+											<tbody id="PKFood">
+												<tr>
+													<td>1</td>
+													<td>喜结同心</td>
+													<td>8</td>
+													<td>升学宴</td>
+													<td>夫妻永结同心</td>
+													<td>999</td>
+													<td>0</td>
+													<td>
+													<button  class="btn btn-primary" type="button">
+														添加
+													</button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									</div>
+									
+									
+									<script>
+									//异步刷新出所搜索菜品的方法
+									//传入的参数分别为                  模块id  模块id2  套餐名
+									function showAllfood(modualid,modualid2,Name){
+										var sqlPKName = '步步高升';
+										if(Name!=''){//若传入的  套餐名不为空则PKName=传入的值
+											sqlPKName=Name;
+										}
+										$("#sqlPKName").attr("value",sqlPKName);
+										if(modualid!=''){//模块一的id  不为空的话就异步刷新模块1
+											var key="name";
+											var value="鸡蛋";
+											$("#sqlPKName").attr("value",sqlPKName);
+											if($("#sqlvalue").val()==''){
+												$("#sqlvalue").attr("value",value);
+											}else{
+												console.log("admin,showAllfood,sqlvalue=="+$("#sqlvalue").val());
+											}
+											$("#sqlkey").attr("value",key);
+											$.ajax({
+												url:"backData/admin_1searchfoodShow.jsp",
+												type:"POST",
+												data:$("#searchFoodForm").serialize(),  //form表单的序列化
+												dataType:"JSON",
+												success:function(data){
+													if(data.code=1){
+														//console.log(data.data);
+														//修改searchFood里面的内容
+														var result=data.data;
+														var strs='';
+														for(i in result){
+															//console.log(result[i].name);
+															var menuNo=result[i].menuNo;
+															var name=result[i].name;
+															var kind=result[i].kind;
+															var serial=result[i].serial;
+															var mean=result[i].mean;
+															var price=result[i].price;
+															var sales=result[i].sales;
+														 strs+=
+														'<tr>'+
+															'<td>'+menuNo+'</td>'+
+															'<td>'+name+'</td>'+
+															'<td>'+kind+'</td>'+
+															'<td>'+serial+'</td>'+
+															'<td>'+mean+'</td>'+
+															'<td>'+price+'</td>'+
+															'<td>'+sales+'</td>'+
+															'<td>'+
+															'<button  class="btn btn-primary" onclick="doPK_MN('+"'"+sqlPKName+"'"+','+"'"+name+"'"+','+"'"+"add"+"'"+')" type="button">'+
+																'添加'+
+															'</button>'+
+															'</td>'+
+														'</tr>';
+														}
+													$("#"+modualid).html( strs );
+													//alert("allfood,showAllfood,data.code=="+data.code+";data"+data);
+													}
+												}
+											});
+										}
+										
+										if(modualid2!=''){
+											$.ajax({
+												url:"backData/admin_1pkfoodShow.jsp",
+												type:"POST",
+												data:$("#searchFoodForm").serialize(),  //form表单的序列化
+												dataType:"JSON",
+												success:function(data){
+													if(data.code=1){
+														//console.log(data.data);
+														//修改searchFood里面的内容
+														var result2=data.data;
+														var strs2='';
+														for(i in result2){
+															//console.log(result2[i].name);
+															var menuNo=result2[i].menuNo;
+															var name=result2[i].name;
+															var kind=result2[i].kind;
+															var serial=result2[i].serial;
+															var mean=result2[i].mean;
+															var price=result2[i].price;
+															var sales=result2[i].sales;
+														 strs2+=
+														'<tr>'+
+															'<td>'+menuNo+'</td>'+
+															'<td>'+name+'</td>'+
+															'<td>'+kind+'</td>'+
+															'<td>'+serial+'</td>'+
+															'<td>'+mean+'</td>'+
+															'<td>'+price+'</td>'+
+															'<td>'+sales+'</td>'+
+															'<td>'+
+															'<button  class="btn btn-primary" type="button">'+
+																'删除'+
+															'</button>'+
+															'</td>'+
+														'</tr>';
+														}
+													$("#"+modualid2).html( strs2 );
+													//alert("allfood,showAllfood,data.code=="+data.code+";data"+data);
+													}
+												}
+											});
+										}
+										 
+									}
+									
+									
+									/*
+									这是向套餐添加菜品和从套餐删除菜品的方法
+									*/
+									//参数          套餐名         菜品名        删除还是添加
+									function doPK_MN(PKName,MNName,dowhat){
+										if(dowhat=='del'){
+											
+										}
+										
+										if(dowhat=='add'){
+											$("#sqlPKName").attr("value",PKName);
+											$("#sqlMNName").attr("value",MNName);
+											$("#sqldowhat").attr("value",dowhat);
+											$.ajax({
+												url:"backData/admin_1doPK_MN.jsp",
+												type:"POST",
+												data:$("#searchFoodForm").serialize(),  //form表单的序列化
+												dataType:"JSON",
+												success:function(data){
+														alert(data.data);
+												}
+											});
+										}
+									}
+									
+									</script>

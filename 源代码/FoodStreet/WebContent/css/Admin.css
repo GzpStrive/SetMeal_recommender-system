@@ -1,0 +1,23 @@
+/*方形状变椭圆风格*/
+	.Foodbtn{
+			margin:0 auto;   
+			width: 70%;  
+			font-size:130%;        
+			color: white;
+			border-radius:10%;
+			background: rgb(100 149 237);
+			margin-bottom: 7%;
+			text-decoration:none;
+			/*transition: width 1s;*/    
+			/*all所有元素发生变化用这个控制*/ 
+			transition: all 0.3s;
+	}    	
+	.Foodbtn:hover{
+		cursor:pointer;
+		font-size:130%;
+		font-weight:bold;
+		width: 80%; 
+		border-radius:50%;
+		color: black;
+		background: rgb(248 248 255);   
+	}
